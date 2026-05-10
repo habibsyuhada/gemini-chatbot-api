@@ -1,4 +1,4 @@
-// script.js - Chatbot Frontend with Markdown Support
+// script.js - Chatbot Frontend with Markdown Support & Settings
 
 (function() {
     'use strict';
@@ -9,17 +9,105 @@
     const chatBox = document.getElementById('chat-box');
     const welcomeMessage = document.querySelector('.welcome-message');
 
+    // Settings DOM Elements
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const closeSettingsBtn = document.getElementById('close-settings');
+    const cancelSettingsBtn = document.getElementById('cancel-settings');
+    const saveSettingsBtn = document.getElementById('save-settings');
+    const modelSelect = document.getElementById('model-select');
+    const apiKeyInput = document.getElementById('api-key-input');
+    const toggleApiVisibilityBtn = document.getElementById('toggle-api-visibility');
+
     // Conversation history (stored in memory)
     let conversationHistory = [];
     let isFirstMessage = true;
 
-    // Initialize: focus on input
-    userInput.focus();
+    // Settings (with localStorage)
+    const SETTINGS = {
+        model: localStorage.getItem('gemini_model') || 'gemini-2.5-flash',
+        apiKey: localStorage.getItem('gemini_api_key') || ''
+    };
 
-    /**
-     * Simple Markdown Parser
-     * Handles: bold, italic, lists, line breaks, horizontal rules
-     */
+    // Initialize: load settings and focus input
+    function init() {
+        // Load saved settings into UI
+        modelSelect.value = SETTINGS.model;
+        apiKeyInput.value = SETTINGS.apiKey;
+
+        // Focus on input
+        userInput.focus();
+    }
+
+    // ===== Settings Functions =====
+
+    function openSettings() {
+        settingsModal.classList.add('active');
+        // Reset to current saved values
+        modelSelect.value = SETTINGS.model;
+        apiKeyInput.value = SETTINGS.apiKey;
+    }
+
+    function closeSettings() {
+        settingsModal.classList.remove('active');
+    }
+
+    function saveSettings() {
+        const newModel = modelSelect.value;
+        const newApiKey = apiKeyInput.value.trim();
+
+        // Save to localStorage
+        localStorage.setItem('gemini_model', newModel);
+        if (newApiKey) {
+            localStorage.setItem('gemini_api_key', newApiKey);
+        } else {
+            localStorage.removeItem('gemini_api_key');
+        }
+
+        // Update settings
+        SETTINGS.model = newModel;
+        SETTINGS.apiKey = newApiKey;
+
+        closeSettings();
+
+        // Show confirmation
+        addSystemMessage('Settings saved! Model: ' + newModel);
+    }
+
+    function toggleApiVisibility() {
+        if (apiKeyInput.type === 'password') {
+            apiKeyInput.type = 'text';
+            toggleApiVisibilityBtn.innerHTML = `
+                <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+            `;
+        } else {
+            apiKeyInput.type = 'password';
+            toggleApiVisibilityBtn.innerHTML = `
+                <svg class="eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            `;
+        }
+    }
+
+    function addSystemMessage(text) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'system-message';
+        msgDiv.style.cssText = 'text-align: center; color: var(--text-muted); font-size: 12px; margin: 8px 0;';
+        msgDiv.textContent = text;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Auto-remove after 3 seconds
+        setTimeout(() => msgDiv.remove(), 3000);
+    }
+
+    // ===== Markdown Parser =====
+
     function parseMarkdown(text) {
         // Escape HTML first (security)
         let html = text
@@ -68,12 +156,8 @@
         return html;
     }
 
-    /**
-     * Add a message to the chat box
-     * @param {string} text - Message content
-     * @param {string} sender - 'user' or 'bot'
-     * @returns {HTMLElement} - The created message element
-     */
+    // ===== Chat Functions =====
+
     function addMessageToChat(text, sender) {
         // Remove welcome message on first message
         if (isFirstMessage && welcomeMessage) {
@@ -104,10 +188,6 @@
         return messageDiv;
     }
 
-    /**
-     * Create a temporary "Thinking..." message
-     * @returns {HTMLElement} - The thinking message element
-     */
     function showThinkingMessage() {
         // Remove welcome message if still visible
         if (isFirstMessage && welcomeMessage) {
@@ -131,10 +211,6 @@
         return messageDiv;
     }
 
-    /**
-     * Send conversation to backend and get AI response
-     * @returns {Promise<string>} - The AI's response text
-     */
     async function getAIResponse() {
         const response = await fetch('/api/chat', {
             method: 'POST',
@@ -142,7 +218,9 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                conversation: conversationHistory
+                conversation: conversationHistory,
+                model: SETTINGS.model,
+                apiKey: SETTINGS.apiKey || null
             })
         });
 
@@ -154,9 +232,6 @@
         return data.result;
     }
 
-    /**
-     * Handle form submission
-     */
     async function handleSubmit(event) {
         event.preventDefault();
 
@@ -214,7 +289,40 @@
         userInput.focus();
     }
 
-    // Event Listeners
+    // ===== Event Listeners =====
+
+    // Chat form
     chatForm.addEventListener('submit', handleSubmit);
+
+    // Settings modal
+    settingsBtn.addEventListener('click', openSettings);
+    closeSettingsBtn.addEventListener('click', closeSettings);
+    cancelSettingsBtn.addEventListener('click', closeSettings);
+    saveSettingsBtn.addEventListener('click', saveSettings);
+    toggleApiVisibilityBtn.addEventListener('click', toggleApiVisibility);
+
+    // Close modal on overlay click
+    settingsModal.querySelector('.modal-overlay').addEventListener('click', closeSettings);
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && settingsModal.classList.contains('active')) {
+            closeSettings();
+        }
+    });
+
+    // Example prompt buttons
+    document.querySelectorAll('.prompt-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const prompt = btn.getAttribute('data-prompt');
+            userInput.value = prompt;
+            userInput.focus();
+            // Trigger submit
+            chatForm.dispatchEvent(new Event('submit'));
+        });
+    });
+
+    // Initialize
+    init();
 
 })();
