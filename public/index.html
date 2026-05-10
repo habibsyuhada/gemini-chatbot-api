@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Motivator Realis</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="app-container">
+    <header class="chat-header">
+      <div class="header-content">
+        <div class="avatar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1>Motivator Realis</h1>
+          <span class="status">Nyeselin, tapi jujur</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="chat-main">
+      <div id="chat-box" class="chat-box">
+        <div class="welcome-message">
+          <div class="welcome-icon">💀</div>
+          <h2>Selamat Datang, Manusia</h2>
+          <p>Curhat apa aja. Aku jawab jujur, pedes, dan tanpa basa-basi.</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="chat-footer">
+      <form id="chat-form" class="chat-form">
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="user-input"
+            placeholder="Curhat kerja, cinta, atau hidup..."
+            autocomplete="off"
+          />
+          <button type="submit" class="send-button" aria-label="Send message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 2L11 13"/>
+              <path d="M22 2L15 22L11 13L2 9L22 2"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+      <p class="footer-text">Powered by Google Gemini + Pahitnya Realita</p>
+    </footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
