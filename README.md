@@ -2,6 +2,8 @@
 
 Chatbot AI dengan kepribadian sinis, realistis, dan nyelekit. Dibuat untuk memberikan "motivasi" jujur tanpa basa-basi.
 
+**Live Demo:** [https://gemini-chatbot-api-livid.vercel.app](https://gemini-chatbot-api-livid.vercel.app) 🚀
+
 ## Fitur
 
 - 💀 **Sarkastis & Nyelekit** - Jawaban pedas tapi jujur
@@ -9,6 +11,9 @@ Chatbot AI dengan kepribadian sinis, realistis, dan nyelekit. Dibuat untuk membe
 - 💬 **Bahasa Gaul** - Ngobrol santai kayak teman
 - 🌙 **Dark Mode** - Tampilan aesthetic yang nyaman di mata
 - ⚡ **Real-time** - Respon cepat pakai Google Gemini API
+- ⚙️ **Model Selector** - Pilih model AI (flash, flash-lite, gemini-3, dll)
+- 🔑 **Custom API Key** - Pakai API key sendiri (opsional)
+- 📝 **Example Prompts** - Klik untuk langsung chat dengan respon lucu
 
 ## Prasyarat
 
