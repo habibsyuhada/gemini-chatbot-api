@@ -4,6 +4,9 @@ Chatbot AI dengan kepribadian sinis, realistis, dan nyelekit. Dibuat untuk membe
 
 **Live Demo:** [https://gemini-chatbot-api-livid.vercel.app](https://gemini-chatbot-api-livid.vercel.app) 🚀
 
+## Screenshot
+<img width="1919" height="919" alt="image" src="https://github.com/user-attachments/assets/10b4ee7c-c94b-4409-99b3-ed0fdeea5d6a" />
+
 ## Fitur
 
 - 💀 **Sarkastis & Nyelekit** - Jawaban pedas tapi jujur
